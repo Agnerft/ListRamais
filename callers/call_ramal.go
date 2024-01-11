@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/makesystem/list_ramais/domain"
-	"github.com/makesystem/list_ramais/util"
+	"github.com/agnerft/ListRamais/domain"
+	"github.com/agnerft/ListRamais/util"
 )
 
 // var RamalSelecionado *ramal.Ramal

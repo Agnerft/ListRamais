@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/makesystem/list_ramais/domain"
-	"github.com/makesystem/list_ramais/util"
+	"github.com/agnerft/ListRamais/domain"
+	"github.com/agnerft/ListRamais/util"
 )
 
 var Cliente *domain.Cliente

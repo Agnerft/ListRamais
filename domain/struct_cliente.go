@@ -2,11 +2,11 @@ package domain
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 
-	"github.com/makesystem/list_ramais/domain"
+	"github.com/agnerft/ListRamais/domain"
 )
 
 type Cliente struct {
@@ -35,7 +35,7 @@ func (c *Cliente) RequestJsonCliente(url string) ([]Cliente, error) {
 	defer response.Body.Close()
 
 	// Imprimir o conteúdo do corpo da resposta
-	responseBody, err := ioutil.ReadAll(response.Body)
+	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Fatal("Erro ao ler o corpo da resposta:", err)
 		return nil, err
