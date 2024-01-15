@@ -3,6 +3,8 @@ package callers
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/agnerft/ListRamais/domain"
 	"github.com/agnerft/ListRamais/util"
@@ -30,7 +32,7 @@ func HandleRamais(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(ramais)
 
-	util.RenderTemplate(w, ramais, "./util/assets/ramais.html")
+	util.RenderTemplate(w, ramais, filepath.Join(os.TempDir(), "ramais.html"))
 
 }
 
@@ -44,5 +46,5 @@ func HandleSelecionarRamal(w http.ResponseWriter, r *http.Request) {
 	// Responder ao cliente
 	w.WriteHeader(http.StatusOK)
 
-	util.RenderTemplate(w, RamalSelecionado, "util/assets/ramalSelecionado.html")
+	util.RenderTemplate(w, RamalSelecionado, filepath.Join(os.TempDir(), "ramalSelecionado.html"))
 }

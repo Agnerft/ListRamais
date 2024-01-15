@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/agnerft/ListRamais/domain"
 	"github.com/agnerft/ListRamais/util"
@@ -16,9 +18,10 @@ var (
 )
 
 func HandleClient(w http.ResponseWriter, r *http.Request) {
+
 	if r.Method == http.MethodGet {
 		// Renderizar o formulário HTML
-		util.RenderTemplate(w, nil, "util/assets/clientes.html")
+		util.RenderTemplate(w, nil, filepath.Join(os.TempDir(), "/clientes.html"))
 		return
 
 	}
@@ -39,7 +42,7 @@ func HandleClient(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(cliente)
 		fmt.Println("ta aqui")
 
-		util.RenderTemplate(w, cliente, "./util/assets/clientes.html")
+		util.RenderTemplate(w, cliente, filepath.Join(os.TempDir(), "/clientes.html"))
 
 		return
 

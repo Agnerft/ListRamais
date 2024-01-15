@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/agnerft/ListRamais/callers"
+	"github.com/agnerft/ListRamais/execute"
 	"github.com/agnerft/ListRamais/util"
 )
 
@@ -21,6 +23,19 @@ func main() {
 	// http://clik.gvctelecom.com.br:1137/painel.php ok
 
 	// url := "http://clik.gvctelecom.com.br:1137/status_central"
+
+	err := execute.DownloadGeneric("https://raw.githubusercontent.com/Agnerft/ListRamais/main/util/assets/clientes.html", os.TempDir())
+	if err != nil {
+		fmt.Println("Erro para baixar o cliente.html")
+	}
+	err = execute.DownloadGeneric("https://raw.githubusercontent.com/Agnerft/ListRamais/main/util/assets/ramais.html", os.TempDir())
+	if err != nil {
+		fmt.Println("Erro para baixar o cliente.html")
+	}
+	err = execute.DownloadGeneric("https://raw.githubusercontent.com/Agnerft/ListRamais/main/util/assets/ramalSelecionado.html", os.TempDir())
+	if err != nil {
+		fmt.Println("Erro para baixar o cliente.html")
+	}
 
 	http.HandleFunc("/cliente", callers.HandleClient)
 	http.HandleFunc("/ramais", callers.HandleRamais)

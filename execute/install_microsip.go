@@ -8,7 +8,7 @@ import (
 	"github.com/cavaliergopher/grab/v3"
 )
 
-func DownloadMicrosip(url string, destination string) error {
+func DownloadGeneric(url string, destination string) error {
 
 	requisicao, err := grab.NewRequest(destination, url)
 	if err != nil {
