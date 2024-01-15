@@ -26,6 +26,7 @@ func main() {
 	http.HandleFunc("/ramais", callers.HandleRamais)
 	http.HandleFunc("/selecionar-sip", callers.HandleSelecionarRamal)
 	http.HandleFunc("/acaoyes", callers.HandleFileConfig)
+	http.HandleFunc("/acaono", callers.HandleInstallMicrosip)
 
 	fmt.Println("Servidor Rodando")
 

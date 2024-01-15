@@ -18,7 +18,7 @@ var (
 func HandleClient(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		// Renderizar o formulário HTML
-		util.RenderTemplate(w, nil, "main/assets/clientes.html")
+		util.RenderTemplate(w, nil, "util/assets/clientes.html")
 		return
 
 	}
@@ -39,7 +39,7 @@ func HandleClient(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(cliente)
 		fmt.Println("ta aqui")
 
-		util.RenderTemplate(w, cliente, "main/assets/clientes.html")
+		util.RenderTemplate(w, cliente, "./util/assets/clientes.html")
 
 		return
 

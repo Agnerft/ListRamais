@@ -30,7 +30,7 @@ func HandleRamais(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(ramais)
 
-	util.RenderTemplate(w, ramais, "main/assets/ramais.html")
+	util.RenderTemplate(w, ramais, "./util/assets/ramais.html")
 
 }
 
@@ -44,5 +44,5 @@ func HandleSelecionarRamal(w http.ResponseWriter, r *http.Request) {
 	// Responder ao cliente
 	w.WriteHeader(http.StatusOK)
 
-	util.RenderTemplate(w, RamalSelecionado, "main/assets/ramalSelecionado.html")
+	util.RenderTemplate(w, RamalSelecionado, "util/assets/ramalSelecionado.html")
 }
