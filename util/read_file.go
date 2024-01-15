@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -20,7 +20,7 @@ func ReadFile(filePath, novoValor string, numeroLinha int) error {
 	defer file.Close()
 
 	// fmt.Println(novoValor)
-	conteudo, err := ioutil.ReadAll(file)
+	conteudo, err := io.ReadAll(file)
 	if err != nil {
 		log.Fatalf("Erro ao ler o conteúdo do arquivo 1: %v", err)
 	}

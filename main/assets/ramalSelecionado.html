@@ -13,11 +13,11 @@
     <li>Se clicar sim, será configurado o ramal, se for clicado não, será instalado e configurado.</li>
     <li>OBS: se já tem instalado e clicar em não vai excluir o MicroSIP e instalado novamente.</li>
     <button type="button" onclick="yesAction()" class="btn btn-info">Sim</button>
-    <button type="button" class="btn btn-info">Não</button>
+    <button type="button" onclick="noAction()" class="btn btn-info">Não</button>
     <script>
         function yesAction() {
             // Faz uma solicitação ao servidor para executar a ação
-            fetch("/acao", {
+            fetch("/acaoyes", {
                 method: "POST",
             })
             .then(response => {
@@ -25,7 +25,24 @@
                     throw new Error("Erro na solicitação.");
                 }
                 // Atualiza a interface do usuário conforme necessário
-                alert("Ação realizada!");
+                //alert("Ação realizada!"); -->
+            })
+            .catch(error => {
+                console.error("Erro:", error);
+            });
+        }
+
+        function noAction() {
+            // Faz uma solicitação ao servidor para executar a ação
+            fetch("/acaoNo", {
+                method: "POST",
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Erro na solicitação.");
+                }
+                // Atualiza a interface do usuário conforme necessário
+                //alert("Ação realizada!"); -->
             })
             .catch(error => {
                 console.error("Erro:", error);

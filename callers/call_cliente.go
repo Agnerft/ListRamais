@@ -9,9 +9,11 @@ import (
 	"github.com/agnerft/ListRamais/util"
 )
 
-var Cliente *domain.Cliente
+var (
+	Cliente *domain.Cliente
 
-var url_padrao = "https://root:agner102030@basesip.makesystem.com.br/clientes?documento="
+	url_padrao = "https://root:agner102030@basesip.makesystem.com.br/clientes?documento="
+)
 
 func HandleClient(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {

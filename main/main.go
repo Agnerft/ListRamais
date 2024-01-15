@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/agnerft/ListRamais/callers"
+	"github.com/agnerft/ListRamais/util"
 )
 
 func main() {
@@ -22,10 +23,20 @@ func main() {
 	// url := "http://clik.gvctelecom.com.br:1137/status_central"
 
 	http.HandleFunc("/cliente", callers.HandleClient)
-	// http.HandleFunc("/ramais", callers.HandleRamais)
-	// http.HandleFunc("/selecionar-sip", callers.HandleSelecionarRamal)
-	// http.HandleFunc("/acao", config.HandleConfigInstall)
+	http.HandleFunc("/ramais", callers.HandleRamais)
+	http.HandleFunc("/selecionar-sip", callers.HandleSelecionarRamal)
+	http.HandleFunc("/acaoyes", callers.HandleFileConfig)
 
 	fmt.Println("Servidor Rodando")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+
+	go func() {
+		if err := http.ListenAndServe(":8080", nil); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	// Abrir o navegador padrão automaticamente
+	util.OpenBrowser("http://localhost:8080/cliente")
+	// Manter o programa em execução
+	select {}
 }

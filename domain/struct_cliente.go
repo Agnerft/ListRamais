@@ -5,8 +5,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-
-	"github.com/agnerft/ListRamais/domain"
 )
 
 type Cliente struct {
@@ -16,8 +14,13 @@ type Cliente struct {
 	Link              string `json:"link"`
 	Id                int    `json:"id"`
 	Link_sip          string `json:"link_sip"`
-	RamaisRegistrados []domain.Ramal
+	RamaisRegistrados []Ramal
 }
+
+var (
+	ramal    = Ramal{}
+	clientes []Cliente
+)
 
 type ClientesRegistrados struct {
 	ClientesRegistrados []Cliente
@@ -43,8 +46,6 @@ func (c *Cliente) RequestJsonCliente(url string) ([]Cliente, error) {
 
 	// fmt.Println(string(responseBody))
 
-	var clientes []Cliente
-
 	// err = json.NewDecoder(response.Body).Decode(&cliente)
 	// if err != nil {
 	// 	log.Fatal("Erro ao decodificar o JSON:", err)
@@ -60,7 +61,7 @@ func (c *Cliente) RequestJsonCliente(url string) ([]Cliente, error) {
 	for i, cliente := range clientes {
 		// fmt.Println(cliente.Link)
 
-		ramais, err := domain.RequestJsonRamal(cliente.Link + "/status_central")
+		ramais, err := ramal.RequestJsonRamal(cliente.Link + "/status_central")
 		if err != nil {
 			log.Fatalln("Usuário não encontrado.", err)
 			return nil, err

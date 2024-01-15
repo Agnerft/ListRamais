@@ -103,6 +103,7 @@ enableShortcuts=0
 shortcutsBottom=0
 lastCallNumber=
 lastCallHasVideo=0
+
 [Account1]
 label=7801
 server=jrsolution.gvctelecom.com.br:5131
