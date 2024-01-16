@@ -56,7 +56,7 @@ import (
 // 	return nil
 // }
 
-func ReadFile(filePath, oldText, newText string) error {
+func ReadFile(filePath, oldText, newText string, position int) error {
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		panic(err)
@@ -64,17 +64,25 @@ func ReadFile(filePath, oldText, newText string) error {
 	}
 
 	// SEGUE
-	txt := strings.Replace(string(data), oldText, newText, 1)
 
-	err = os.WriteFile(filePath, []byte(txt), 0755)
-	if err != nil {
-		panic(err)
+	teste := strings.Split(string(data), "\n")
 
+	if string(teste[position]) == oldText {
+
+		txt := strings.Replace(string(data), oldText, newText, 1)
+		err = os.WriteFile(filePath, []byte(txt), 0755)
+		if err != nil {
+			panic(err)
+
+		}
+	} else {
+		fmt.Printf("O texto que está no %s é igual ao %s, por isso não precisa gravar.\n", teste[position], newText)
 	}
 
 	return nil
 
 }
+
 func contarLinhasNoConteudo(data []byte) (int, error) {
 	// Inicializar o contador de linhas
 	numLinhas := 0

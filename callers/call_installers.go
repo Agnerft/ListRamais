@@ -93,70 +93,70 @@ func HandleFileConfig(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(string(Cliente.Cliente))
 	// EDIÇÃO DO ARQUIVO
-	err = util.ReadFile(destFileConfigMicrosip, `accountId=`, `accountId=1`)
+	err = util.ReadFile(destFileConfigMicrosip, "accountId=0", "accountId=1", 1)
 	if err != nil {
 		log.Fatal("Erro para modificar o AccountId. \n", err)
 	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "videoBitrate=256", 24)
-	// if err != nil {
-	// 	log.Fatal("Erro para modificar o videoBitrate. \n", err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "videoBitrate=0", "videoBitrate=256", 23)
+	if err != nil {
+		log.Fatal("Erro para modificar o videoBitrate. \n", err)
+	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "recordingPath="+filepath.Join(util.UserCurrent().HomeDir, "Desktop"), 33)
-	// if err != nil {
-	// 	log.Fatal("Erro para modificar o recordingPath. \n", err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "recordingPath=", "recordingPath="+filepath.Join(util.UserCurrent().HomeDir, "Desktop"), 32)
+	if err != nil {
+		log.Fatal("Erro para modificar o recordingPath. \n", err)
+	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "recordingFormat=mp3", 34)
-	// if err != nil {
-	// 	log.Fatal("Erro para modificar o recordingFormat. \n", err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "recordingFormat=", "recordingFormat=mp3", 33)
+	if err != nil {
+		log.Fatal("Erro para modificar o recordingFormat. \n", err)
+	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "autoAnswer=all", 38)
-	// if err != nil {
-	// 	log.Fatal("Erro para modificar o autoAnswer. \n", err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "autoAnswer=button", "autoAnswer=all", 37)
+	if err != nil {
+		log.Fatal("Erro para modificar o autoAnswer. \n", err)
+	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "denyIncoming=", 44)
-	// if err != nil {
-	// 	log.Fatal("Erro para modificar o denyIncoming. \n", err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "denyIncoming=button", "denyIncoming=", 43)
+	if err != nil {
+		log.Fatal("Erro para modificar o denyIncoming. \n", err)
+	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "label="+RamalSelecionado, 108)
-	// if err != nil {
-	// 	log.Fatal("Erro para modificar o Sip no Label. \n", err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "label=", "label="+RamalSelecionado, 106)
+	if err != nil {
+		log.Fatal("Erro para modificar o Sip no Label. \n", err)
+	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "server="+string(Cliente.Link_sip), 109)
-	// if err != nil {
-	// 	log.Fatalf("Erro para setar o link do cliente %s. \n %s", string(Cliente.Cliente), err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "server=", "server="+string(Cliente.Link_sip), 107)
+	if err != nil {
+		log.Fatalf("Erro para setar o link do cliente %s. \n %s", string(Cliente.Cliente), err)
+	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "proxy="+string(Cliente.Link_sip), 110)
-	// if err != nil {
-	// 	log.Fatalf("Erro para setar o link do cliente %s. \n %s", string(Cliente.Cliente), err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "proxy=", "proxy="+string(Cliente.Link_sip), 108)
+	if err != nil {
+		log.Fatalf("Erro para setar o link do cliente %s. \n %s", string(Cliente.Cliente), err)
+	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "domain="+string(Cliente.Link_sip), 111)
-	// if err != nil {
-	// 	log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "domain=", "domain="+string(Cliente.Link_sip), 109)
+	if err != nil {
+		log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
+	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "username="+RamalSelecionado, 112)
-	// if err != nil {
-	// 	log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "username=", "username="+RamalSelecionado, 110)
+	if err != nil {
+		log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
+	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "password="+RamalSelecionado+"@abc", 113)
-	// if err != nil {
-	// 	log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "password=", "password="+RamalSelecionado+"@abc", 111)
+	if err != nil {
+		log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
+	}
 
-	// err = util.ReadFile(destFileConfigMicrosip, "authID="+RamalSelecionado, 114)
-	// if err != nil {
-	// 	log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
-	// }
+	err = util.ReadFile(destFileConfigMicrosip, "authID=", "authID="+RamalSelecionado, 112)
+	if err != nil {
+		log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
+	}
 
 }
 
