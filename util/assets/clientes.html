@@ -8,35 +8,37 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Informe o CNPJ da empresa:</h1>
-    <form action="/cliente" method="post">
-        
-        <label for="cnpj">CNPJ:</label>
-        <input type="text" id="cnpj" name="cnpj" required pattern="[0-9]{14}" title="O CNPJ deve ter 14 dígitos numéricos">
-        <br>
-        <!-- <button onclick="toggleRamais()" type="submit">Enviar</button> -->
-        <button type="submit" type="button" class="btn btn-info">Enviar</button>
+    <div style=" display: flex;align-items: center;justify-content: center;height: 100vh;margin: 0;">
+        <h1>Informe o CNPJ da empresa:</h1>
+        <form action="/cliente" method="post">
+            
+            <label for="cnpj">CNPJ:</label>
+            <input type="text" id="cnpj" name="cnpj" required pattern="[0-9]{14}" title="O CNPJ deve ter 14 dígitos numéricos">
+            <br>
+            <!-- <button onclick="toggleRamais()" type="submit">Enviar</button> -->
+            <button type="submit" type="button" class="btn btn-info">Enviar</button>
 
-    </form>
+        </form>
 
-    <div id="clientes-list">
-        <ul style="list-style: none;">
-            {{ range . }}
-                <li>Cliente: {{ .Cliente }}</li>
-                <li onclick="selecionarDoc(this)">Documento: {{ .Documento }}</li>
-                <ul style="list-style: none;">
-                    {{ range .RamaisRegistrados }}
-                        {{ if ne .Sip "" }}
-                            <li style="color: blue;">SIP: {{ .Sip }}, IP: {{ .Ip }}, IN USE: {{ .InUse }}</li>
-                            
-                            <button type="button" class="btn btn-info" onclick="selecionarSip('{{ .Sip }}')">Selecionar</button>
+        <div id="clientes-list">
+            <ul style="list-style: none;">
+                {{ range . }}
+                    <li>Cliente: {{ .Cliente }}</li>
+                    <li onclick="selecionarDoc(this)">Documento: {{ .Documento }}</li>
+                    <ul style="list-style: none;">
+                        {{ range .RamaisRegistrados }}
+                            {{ if ne .Sip "" }}
+                                <li style="color: blue;">SIP: {{ .Sip }}, IP: {{ .Ip }}, IN USE: {{ .InUse }}</li>
+                                
+                                <button type="button" class="btn btn-info" onclick="selecionarSip('{{ .Sip }}')">Selecionar</button>
+                            {{ end }}
                         {{ end }}
-                    {{ end }}
-                    <li>Funcionou</li>
-                </ul>
-                
-            {{ end }}
-        </ul>
+                        <li>Funcionou</li>
+                    </ul>
+                    
+                {{ end }}
+            </ul>
+        </div>
     </div>
 </body>
 <script>
