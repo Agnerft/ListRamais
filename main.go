@@ -2,11 +2,8 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 
-	"github.com/agnerft/ListRamais/callers"
-	"github.com/agnerft/ListRamais/util"
+	"github.com/agnerft/ListRamais/router"
 )
 
 func main() {
@@ -35,22 +32,22 @@ func main() {
 	// 	fmt.Println("Erro para baixar o cliente.html")
 	// }
 
-	http.HandleFunc("/cliente", callers.HandleClient)
-	http.HandleFunc("/ramais", callers.HandleRamais)
-	http.HandleFunc("/selecionar-sip", callers.HandleSelecionarRamal)
-	http.HandleFunc("/acaoyes", callers.HandleFileConfig)
-	http.HandleFunc("/acaono", callers.HandleInstallMicrosip)
-
+	// http.HandleFunc("/cliente", callers.HandleClient)
+	// http.HandleFunc("/ramais", callers.HandleRamais)
+	// http.HandleFunc("/selecionar-sip", callers.HandleSelecionarRamal)
+	// http.HandleFunc("/acaoyes", callers.HandleFileConfig)
+	// http.HandleFunc("/acaono", callers.HandleInstallMicrosip)
+	router.InitRouter()
 	fmt.Println("Servidor Rodando")
 
-	go func() {
-		if err := http.ListenAndServe(":8080", nil); err != nil {
-			log.Fatal(err)
-		}
-	}()
+	// go func() {
+	// 	if err := http.ListenAndServe(":8080", nil); err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// }()
 
-	// Abrir o navegador padrão automaticamente
-	util.OpenBrowser("http://localhost:8080/cliente")
-	// Manter o programa em execução
-	select {}
+	// // Abrir o navegador padrão automaticamente
+	// util.OpenBrowser("http://localhost:8080/cliente")
+	// // Manter o programa em execução
+	// select {}
 }
