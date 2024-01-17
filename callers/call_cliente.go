@@ -21,7 +21,9 @@ func HandleClient(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodGet {
 		// Renderizar o formulário HTML
-		util.RenderTemplate(w, nil, filepath.Join(os.TempDir(), "/clientes.html"))
+		// util.RenderTemplate(w, nil, filepath.Join(os.TempDir(), "/clientes.html"))
+
+		util.RenderTemplate(w, nil, "/util/assets/clientes.html")
 		return
 
 	}
