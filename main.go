@@ -6,6 +6,8 @@ import (
 	"github.com/agnerft/ListRamais/router"
 )
 
+var ()
+
 func main() {
 	// http://workstation.gvctelecom.com.br:1139/painel.php ok
 	// http://pires.gvctelecom.com.br:1155/painel.php ok

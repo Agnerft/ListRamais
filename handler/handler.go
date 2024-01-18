@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"embed"
 	"net/http"
+	"text/template"
 
 	"github.com/agnerft/ListRamais/domain"
 	"github.com/gin-gonic/gin"
@@ -9,13 +11,31 @@ import (
 
 var (
 	Cliente *domain.Cliente
+	//go:embed assets/*
+	//go:embed template/*.html
+	staticFile embed.FS
 
 	// url_padrao = "https://root:agner102030@basesip.makesystem.com.br/clientes?documento="
 )
 
 func HandleClient(c *gin.Context) {
 
-	c.HTML(http.StatusOK, "clientes.html", nil)
+	data, err := staticFile.ReadFile("template/clientes.html")
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Erro para contectar no %s")
+		return
+	}
+
+	tmpl, err := template.New("cliente").Parse(string(data))
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Erro para carregar o template.")
+		return
+	}
+
+	err = tmpl.Execute(c.Writer, nil)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Erro para executar o template.")
+	}
 
 	// if r.Method == http.MethodPost {
 	// 	// Obter a informação do formulário
