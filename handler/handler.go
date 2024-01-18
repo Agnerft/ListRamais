@@ -13,8 +13,7 @@ import (
 
 var (
 	Cliente *domain.Cliente
-	//go:embed assets/*
-	//go:embed template/*.html
+	//go:embed resources
 	staticFile embed.FS
 
 	url_padrao = "https://root:agner102030@basesip.makesystem.com.br/clientes?documento="
@@ -22,7 +21,7 @@ var (
 
 func HandleHomeClient(c *gin.Context) {
 
-	data, err := staticFile.ReadFile("template/clientes.html")
+	data, err := staticFile.ReadFile("resources/template/clientes.html")
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Erro para contectar no %s")
 		return
