@@ -74,7 +74,7 @@ func HandlePostClient(c *gin.Context) {
 	}
 	Cliente = &cliente[0]
 
-	data, err := staticFile.ReadFile("template/clientes.html")
+	data, err := staticFile.ReadFile("resources/template/clientes.html")
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Erro para contectar no %s")
 		return
