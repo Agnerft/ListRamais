@@ -70,3 +70,28 @@ func OpenBrowser(url string) {
 		fmt.Printf("Erro ao abrir o navegador: %v\n", err)
 	}
 }
+
+func TaskkillExecute(filePath string) error {
+	cmd := exec.Command("taskkill", "/IM", filePath) //TASKKILL /IM microsip.exe
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("Erro ao executar o TASKKIL no caminho: %s ", err)
+		return err
+	}
+
+	fmt.Printf("Realizado o fechamento do %s", filePath)
+
+	return nil
+}
+
+func OpenMicroSIP(filePath string) error {
+	cmd := exec.Command(filePath)
+
+	err := cmd.Run()
+	if err != nil {
+		fmt.Printf("Erro ao executar o MicroSIP no caminho: %s ", err)
+		return err
+	}
+
+	return nil
+
+}

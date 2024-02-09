@@ -1,94 +1,259 @@
 package handler
 
 import (
-	"embed"
 	"fmt"
 	"log"
 	"net/http"
-	"text/template"
+	"os"
+	"os/exec"
+	"path/filepath"
 
 	"github.com/agnerft/ListRamais/domain"
+	"github.com/agnerft/ListRamais/execute"
+	"github.com/agnerft/ListRamais/util"
 	"github.com/gin-gonic/gin"
 )
 
 var (
-	Cliente *domain.Cliente
-	//go:embed resources
-	staticFile embed.FS
-
-	url_padrao = "https://root:agner102030@basesip.makesystem.com.br/clientes?documento="
+	Cliente                *domain.Cliente
+	url_padrao             = "https://basesip.makesystem.com.br/clientes?documento="
+	url                    = "https://www.microsip.org/download/MicroSIP-3.21.3.exe"
+	destDeleleteMicroSIP   = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Local", "MicroSIP", "Uninstall.exe")
+	destRunningMicroSIP    = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Local", "MicroSIP", "microsip.exe")
+	destDownMicroSIP       = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Local", "MicroSIP", "MicroSIP-3.21.3.exe")
+	destFileConfigMicrosip = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Roaming", "MicroSIP", "microsip.ini")
+	ramalAtual             string
 )
 
 func HandleHomeClient(c *gin.Context) {
 
-	data, err := staticFile.ReadFile("resources/template/clientes.html")
-	if err != nil {
-		c.String(http.StatusInternalServerError, "Erro para contectar no %s")
+	if c.Request.Method == http.MethodGet {
+		header := c.GetHeader("meu-Header")
+
+		fmt.Printf("Esse é meu Header -> %s", header)
+		// cnpj := r.FormValue("cnpj")
+
+		cli := &domain.Cliente{}
+		cliente, err := cli.RequestJsonCliente(url_padrao + header)
+		if err != nil {
+			http.Error(c.Writer, "Erro ao encontrar cliente.", http.StatusBadRequest)
+		}
+
+		Cliente = &cliente[0]
+
+		c.JSON(http.StatusOK, Cliente)
+
 		return
 	}
 
-	tmpl, err := template.New("cliente").Parse(string(data))
-	if err != nil {
-		c.String(http.StatusInternalServerError, "Erro para carregar o template.")
-		return
-	}
-
-	err = tmpl.Execute(c.Writer, nil)
-	if err != nil {
-		c.String(http.StatusInternalServerError, "Erro para executar o template.")
-	}
-
-	// if r.Method == http.MethodPost {
-	// 	// Obter a informação do formulário
-	// 	cnpj := r.FormValue("cnpj")
-
-	// 	cli := domain.Cliente{}
-	// 	cliente, err := cli.RequestJsonCliente(url_padrao + cnpj)
-
-	// 	Cliente = &cliente[0]
-
-	// 	if err != nil {
-	// 		log.Fatal("Erro ao buscar os ramais.", err)
-	// 	}
-
-	// 	fmt.Println(cliente)
-	// 	fmt.Println("ta aqui")
-
-	// util.RenderTemplate(w, cliente, filepath.Join(os.TempDir(), "/clientes.html"))
-	// 	util.RenderTemplate(w, cliente, "./main/html/clientes.html")
-	// 	return
-
-	// }
-
-	// // Método não suportado
-	// http.Error(w, "Método HTTP não suportado", http.StatusMethodNotAllowed)
+	// Método não suportado
+	http.Error(c.Writer, "Método HTTP não suportado", http.StatusMethodNotAllowed)
 }
 
 func HandlePostClient(c *gin.Context) {
-	cnpj := c.Request.FormValue("cnpj")
+	// cnpj := c.Request.FormValue("cnpj")
 
-	cli := domain.Cliente{}
-	cliente, err := cli.RequestJsonCliente(url_padrao + cnpj)
-	if err != nil {
-		log.Fatal("Erro ao buscar os ramais.", err)
+	// cli := domain.Cliente{}
+	// cliente, err := cli.RequestJsonCliente(url_padrao + cnpj)
+	// if err != nil {
+	// 	log.Fatal("Erro ao buscar os ramais.", err)
+	// }
+	// Cliente = &cliente[0]
+
+	// fmt.Println(c.Request.Body)
+
+}
+
+func HandleSelecionarRamal(c *gin.Context) {
+	// Obter o SIP da query string
+	RamalSelecionado := c.Query("sip")
+
+	fmt.Println("SIP Selecionado:", RamalSelecionado)
+
+	for _, ramal := range Cliente.RamaisRegistrados {
+
+		if RamalSelecionado == ramal.Sip {
+
+			if !ramal.InUse {
+
+				fmt.Printf("ramal %s tem na base e está liberado", ramal.Sip)
+
+			}
+
+			fmt.Printf("ramal %s tem na base mas não está liberado", ramal.Sip)
+		}
+
 	}
-	Cliente = &cliente[0]
+	// Responder ao cliente
+	c.String(http.StatusOK, "Ramais selecionados %s", RamalSelecionado)
+	c.String(http.StatusOK, "Começando a instalação . ..")
 
-	data, err := staticFile.ReadFile("resources/template/clientes.html")
+	ramalAtual = RamalSelecionado
+
+	fmt.Println(ramalAtual)
+
+	HandleInstallMicrosip(c)
+
+}
+
+func HandleInstallMicrosip(c *gin.Context) {
+
+	if _, err := os.Stat(destDeleleteMicroSIP); err == nil {
+		// Se o caminho existe, execute algo
+
+		err = util.ExecuteUnistall(destDeleleteMicroSIP)
+		if err != nil {
+			fmt.Printf("Erro ou executar o Desinstalador.")
+		}
+
+		err := execute.DownloadGeneric(url, destDownMicroSIP)
+		if err != nil {
+			log.Fatal("Erro ao baixar o Arquivo.", err)
+		}
+
+		err = util.ExecuteInstall(destDownMicroSIP)
+		if err != nil {
+			log.Printf("Erro ao instalar o %s", destDownMicroSIP)
+		}
+
+	} else if os.IsNotExist(err) {
+		fmt.Println("o caminho não existe")
+		// Se o caminho não existe, faça algo diferente
+		// BAIXAR O MICROSIP
+		err := execute.DownloadGeneric(url, destDownMicroSIP)
+		if err != nil {
+			log.Fatal("Erro ao baixar o Arquivo.", err)
+		}
+
+		err = util.ExecuteInstall(destDownMicroSIP)
+		if err != nil {
+			fmt.Printf("Erro ou executar o Instalador.")
+		}
+
+		fmt.Print("Aguardando")
+
+		// for {
+		// 	for _, r := range `...` {
+		// 		time.Sleep(500 * time.Millisecond)
+		// 		fmt.Print(string(r))
+		// 	}
+
+		// 	// Limpar os pontos
+		// 	fmt.Print("\b\b\b   \b\b\b")
+
+		// 	// Aguardar um pouco antes de recomeçar
+		// 	time.Sleep(50 * time.Millisecond)
+		// }
+
+	} else {
+		// Algum erro ocorreu ao verificar o caminho
+		fmt.Printf("Erro ao verificar o caminho: %v\n", err)
+		// Adicione aqui o código para lidar com o erro, se necessário
+	}
+
+	fmt.Printf("Chamando configuração")
+
+	err := util.TaskkillExecute("microsip.exe")
 	if err != nil {
-		c.String(http.StatusInternalServerError, "Erro para contectar no %s")
 		return
 	}
 
-	tmpl, err := template.New("cliente").Parse(string(data))
+	err = HandleFileConfig(c)
 	if err != nil {
-		c.String(http.StatusInternalServerError, "Erro para carregar o template.")
-		return
-	}
-	fmt.Println(cliente)
-	err = tmpl.Execute(c.Writer, cliente)
-	if err != nil {
-		c.String(http.StatusInternalServerError, "Erro para executar o template.")
+		fmt.Printf("Erro ao editar o Arquivo: %s", err)
 	}
 
+	fmt.Println("teste")
+}
+
+func HandleFileConfig(c *gin.Context) error {
+
+	fmt.Println("Ta clicando aqui?")
+
+	// fmt.Println(RamalSelecionado)
+
+	err := util.AdicionarConfiguracao(destFileConfigMicrosip)
+	if err != nil {
+		log.Fatal("Erro ao Adicionar a Configuração. \n", err)
+		return err
+	}
+
+	fmt.Println(string(Cliente.Cliente))
+	// EDIÇÃO DO ARQUIVO
+
+	err = util.ReadFile(destFileConfigMicrosip, "accountId=0", "accountId=1", 1)
+	if err != nil {
+		log.Fatal("Erro para modificar o AccountId. \n", err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "videoBitrate=0", "videoBitrate=256", 23)
+	if err != nil {
+		log.Fatal("Erro para modificar o videoBitrate. \n", err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "recordingPath=", "recordingPath="+filepath.Join(util.UserCurrent().HomeDir, "Desktop"), 32)
+	if err != nil {
+		log.Fatal("Erro para modificar o recordingPath. \n", err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "recordingFormat=", "recordingFormat=mp3", 33)
+	if err != nil {
+		log.Fatal("Erro para modificar o recordingFormat. \n", err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "autoAnswer=button", "autoAnswer=all", 37)
+	if err != nil {
+		log.Fatal("Erro para modificar o autoAnswer. \n", err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "denyIncoming=button", "denyIncoming=", 43)
+	if err != nil {
+		log.Fatal("Erro para modificar o denyIncoming. \n", err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "label=", "label="+ramalAtual, 106)
+	if err != nil {
+		log.Fatal("Erro para modificar o Sip no Label. \n", err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "server=", "server="+string(Cliente.Link_sip), 107)
+	if err != nil {
+		log.Fatalf("Erro para setar o link do cliente %s. \n %s", string(Cliente.Cliente), err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "proxy=", "proxy="+string(Cliente.Link_sip), 108)
+	if err != nil {
+		log.Fatalf("Erro para setar o link do cliente %s. \n %s", string(Cliente.Cliente), err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "domain=", "domain="+string(Cliente.Link_sip), 109)
+	if err != nil {
+		log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "username=", "username="+ramalAtual, 110)
+	if err != nil {
+		log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "password=", "password="+ramalAtual+"@abc", 111)
+	if err != nil {
+		log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
+	}
+
+	err = util.ReadFile(destFileConfigMicrosip, "authID=", "authID="+ramalAtual, 112)
+	if err != nil {
+		log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
+	}
+
+	return nil
+}
+
+func HandleTeste(c *gin.Context) {
+	cmd := exec.Command("ps", "-p", fmt.Sprint(890))
+	err := cmd.Run()
+
+	if err != nil {
+		fmt.Printf("Deu erro: %s", err)
+	}
 }

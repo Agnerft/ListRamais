@@ -44,7 +44,7 @@ func (r *Ramal) RequestJsonRamal(url string) (*RamaisRegistrados, error) {
 		if ramal.Sip != "" {
 			count++
 		} else {
-			fmt.Println("Vazio")
+			// fmt.Println("Vazio")
 		}
 
 	}
