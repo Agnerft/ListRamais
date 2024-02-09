@@ -21,7 +21,7 @@ func ExecuteUnistall(filePath string) error {
 
 	cmd := exec.Command(filePath, "/S")
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("Erro ao executar o desinstalador: %s ", err)
+		fmt.Printf("Erro ao executar o desinstalador: %s \n", err)
 		return err
 	}
 
@@ -33,7 +33,7 @@ func ExecuteUnistall(filePath string) error {
 func ExecuteInstall(filePath string) error {
 	cmd := exec.Command(filePath, "/S")
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("Erro ao executar o desinstalador: %s ", err)
+		fmt.Printf("Erro ao executar o desinstalador: %s \n", err)
 		return err
 	}
 
@@ -46,7 +46,7 @@ func UserCurrent() user.User {
 	// Obter o diretório do usuário
 	usr, err := user.Current()
 	if err != nil {
-		log.Fatal("Erro ao obter o diretório do usuário:", err)
+		log.Fatal("Erro ao obter o diretório do usuário: \n", err)
 	}
 
 	return *usr
@@ -74,11 +74,11 @@ func OpenBrowser(url string) {
 func TaskkillExecute(filePath string) error {
 	cmd := exec.Command("taskkill", "/IM", filePath) //TASKKILL /IM microsip.exe
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("Erro ao executar o TASKKIL no caminho: %s ", err)
+		fmt.Printf("Erro ao executar o TASKKIL no caminho: %s \n", err)
 		return err
 	}
 
-	fmt.Printf("Realizado o fechamento do %s", filePath)
+	fmt.Printf("Realizado o fechamento do %s \n", filePath)
 
 	return nil
 }
@@ -88,7 +88,7 @@ func OpenMicroSIP(filePath string) error {
 
 	err := cmd.Run()
 	if err != nil {
-		fmt.Printf("Erro ao executar o MicroSIP no caminho: %s ", err)
+		fmt.Printf("Erro ao executar o MicroSIP no caminho: %s \n", err)
 		return err
 	}
 

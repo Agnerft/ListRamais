@@ -15,11 +15,11 @@ import (
 )
 
 var (
-	Cliente                *domain.Cliente
-	url_padrao             = "https://basesip.makesystem.com.br/clientes?documento="
-	url                    = "https://www.microsip.org/download/MicroSIP-3.21.3.exe"
-	destDeleleteMicroSIP   = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Local", "MicroSIP", "Uninstall.exe")
-	destRunningMicroSIP    = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Local", "MicroSIP", "microsip.exe")
+	Cliente              *domain.Cliente
+	url_padrao           = "https://basesip.makesystem.com.br/clientes?documento="
+	url                  = "https://www.microsip.org/download/MicroSIP-3.21.3.exe"
+	destDeleleteMicroSIP = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Local", "MicroSIP", "Uninstall.exe")
+	// destRunningMicroSIP    = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Local", "MicroSIP", "microsip.exe")
 	destDownMicroSIP       = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Local", "MicroSIP", "MicroSIP-3.21.3.exe")
 	destFileConfigMicrosip = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Roaming", "MicroSIP", "microsip.ini")
 	ramalAtual             string
@@ -68,7 +68,7 @@ func HandleSelecionarRamal(c *gin.Context) {
 	// Obter o SIP da query string
 	RamalSelecionado := c.Query("sip")
 
-	fmt.Println("SIP Selecionado:", RamalSelecionado)
+	fmt.Printf("SIP Selecionado: %s \n", RamalSelecionado)
 
 	for _, ramal := range Cliente.RamaisRegistrados {
 
@@ -76,17 +76,17 @@ func HandleSelecionarRamal(c *gin.Context) {
 
 			if !ramal.InUse {
 
-				fmt.Printf("ramal %s tem na base e está liberado", ramal.Sip)
+				fmt.Printf("ramal %s tem na base e está liberado \n", ramal.Sip)
 
 			}
 
-			fmt.Printf("ramal %s tem na base mas não está liberado", ramal.Sip)
+			fmt.Printf("ramal %s tem na base mas não está liberado \n", ramal.Sip)
 		}
 
 	}
 	// Responder ao cliente
-	c.String(http.StatusOK, "Ramais selecionados %s", RamalSelecionado)
-	c.String(http.StatusOK, "Começando a instalação . ..")
+	c.String(http.StatusOK, "Ramais selecionados %s \n", RamalSelecionado)
+	c.String(http.StatusOK, "Começando a instalação . .. \n")
 
 	ramalAtual = RamalSelecionado
 
