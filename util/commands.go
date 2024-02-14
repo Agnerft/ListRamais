@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"os/user"
 	"runtime"
+	"strconv"
+	"strings"
 )
 
 // var UsrCurr *user.User
@@ -71,14 +73,14 @@ func OpenBrowser(url string) {
 	}
 }
 
-func TaskkillExecute(filePath string) error {
-	cmd := exec.Command("taskkill", "/IM", filePath) //TASKKILL /IM microsip.exe
+func TaskkillExecute(pid int) error {
+	cmd := exec.Command("taskkill", "/pid", strconv.Itoa(pid)) //TASKKILL /IM microsip.exe
 	if err := cmd.Run(); err != nil {
 		fmt.Printf("Erro ao executar o TASKKIL no caminho: %s \n", err)
 		return err
 	}
 
-	fmt.Printf("Realizado o fechamento do %s \n", filePath)
+	fmt.Printf("Realizado o fechamento do %s \n", strconv.Itoa(pid))
 
 	return nil
 }
@@ -94,4 +96,29 @@ func OpenMicroSIP(filePath string) error {
 
 	return nil
 
+}
+
+func GetPIDbyName(processName string) (int, error) {
+
+	cmd := exec.Command("tasklist", "/FO", "CSV", "/NH")
+	output, err := cmd.Output()
+	if err != nil {
+		return 0, nil
+	}
+
+	lines := strings.Split(string(output), "\n")
+	for _, line := range lines {
+		fields := strings.Split(line, ",")
+		if len(fields) >= 2 {
+
+			name := strings.Trim(fields[0], "\"")
+			pid := strings.Trim(fields[1], "\"")
+			if strings.EqualFold(name, processName) {
+				return strconv.Atoi(pid)
+			}
+
+		}
+	}
+
+	return 0, fmt.Errorf("Processo não encontrado: %s", processName)
 }

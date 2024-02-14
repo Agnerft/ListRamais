@@ -150,13 +150,13 @@ disableSessionTimer=0
 
 	if numeroLinhas <= 106 {
 		// Add novo conteudo
-		data = append(data, []byte("\n"+novoConteudo)...)
+		data = append(data, []byte(novoConteudo)...)
 		// Escrever o novo conteúdo no arquivo
 		err = os.WriteFile(destFile, data, 0755)
 		if err != nil {
 			panic(err)
-
 		}
+
 	} else {
 		fmt.Println("Não precisa add o arquivo")
 	}

@@ -8,14 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var ()
-
 func InitRouter() {
 	r := gin.Default()
 
 	// Configuração do middleware CORS
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://seu-frontend.com"} // Substitua pelo domínio do seu frontend
+	config.AllowOrigins = []string{"http://localhost:8182"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 
 	// Adiciona o middleware CORS ao roteador Gin
@@ -24,7 +22,7 @@ func InitRouter() {
 	r.GET("/cliente", handler.HandleHomeClient)
 	r.POST("/cliente", handler.HandlePostClient)
 	r.GET("/ramal", handler.HandleSelecionarRamal)
-	// r.GET("/t", handler.HandleTeste)
+	r.GET("/t", handler.HandleFileConfig)
 	// r.Static("/assets", "./handler/assets/assets")
 
 	r.Run(":8080")

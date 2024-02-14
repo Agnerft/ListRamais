@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/agnerft/ListRamais/domain"
 	"github.com/agnerft/ListRamais/execute"
@@ -23,18 +25,30 @@ var (
 	destDownMicroSIP       = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Local", "MicroSIP", "MicroSIP-3.21.3.exe")
 	destFileConfigMicrosip = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Roaming", "MicroSIP", "microsip.ini")
 	ramalAtual             string
+	processName            = "microsip.exe"
 )
 
 func HandleHomeClient(c *gin.Context) {
 
 	if c.Request.Method == http.MethodGet {
-		header := c.GetHeader("meu-Header")
+		// header := c.GetHeader("meu-Header")
+		// header := c.Query("cnpj")
 
-		fmt.Printf("Esse é meu Header -> %s", header)
+		// fmt.Printf("Esse é meu Header -> %s", header)
+
+		fmt.Println("Bem-vindo! Por favor, digite algo:")
+		reader := bufio.NewReader(os.Stdin)
+
+		entrada, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Erro ao ler a entrada:", err)
+			return
+		}
+		entrada = strings.TrimRight(entrada, "\n")
 		// cnpj := r.FormValue("cnpj")
 
 		cli := &domain.Cliente{}
-		cliente, err := cli.RequestJsonCliente(url_padrao + header)
+		cliente, err := cli.RequestJsonCliente(url_padrao + entrada)
 		if err != nil {
 			http.Error(c.Writer, "Erro ao encontrar cliente.", http.StatusBadRequest)
 		}
@@ -44,6 +58,7 @@ func HandleHomeClient(c *gin.Context) {
 		c.JSON(http.StatusOK, Cliente)
 
 		return
+
 	}
 
 	// Método não suportado
@@ -92,7 +107,19 @@ func HandleSelecionarRamal(c *gin.Context) {
 
 	fmt.Println(ramalAtual)
 
-	HandleInstallMicrosip(c)
+	pid, err := util.GetPIDbyName(processName)
+	if err != nil {
+		fmt.Println("Erro:", err)
+	}
+
+	fmt.Println(pid)
+
+	err = util.TaskkillExecute(pid)
+	if err != nil {
+		fmt.Fprintf(os.Stdout, "Não tem esse processo rodando %s", []any{processName}...)
+	}
+
+	// HandleInstallMicrosip(c)
 
 }
 
@@ -153,20 +180,15 @@ func HandleInstallMicrosip(c *gin.Context) {
 
 	fmt.Printf("Chamando configuração")
 
-	err := util.TaskkillExecute("microsip.exe")
-	if err != nil {
-		return
-	}
-
-	err = HandleFileConfig(c)
-	if err != nil {
-		fmt.Printf("Erro ao editar o Arquivo: %s", err)
-	}
+	// err := HandleFileConfig(c)
+	// if err != nil {
+	// 	fmt.Printf("Erro ao editar o Arquivo: %s", err)
+	// }
 
 	fmt.Println("teste")
 }
 
-func HandleFileConfig(c *gin.Context) error {
+func HandleFileConfig(c *gin.Context) {
 
 	fmt.Println("Ta clicando aqui?")
 
@@ -175,7 +197,7 @@ func HandleFileConfig(c *gin.Context) error {
 	err := util.AdicionarConfiguracao(destFileConfigMicrosip)
 	if err != nil {
 		log.Fatal("Erro ao Adicionar a Configuração. \n", err)
-		return err
+
 	}
 
 	fmt.Println(string(Cliente.Cliente))
@@ -246,7 +268,6 @@ func HandleFileConfig(c *gin.Context) error {
 		log.Printf("Erro para setar o link do cliente %s. %s", string(Cliente.Cliente), err)
 	}
 
-	return nil
 }
 
 func HandleTeste(c *gin.Context) {
