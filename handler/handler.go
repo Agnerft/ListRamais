@@ -26,6 +26,8 @@ var (
 	destFileConfigMicrosip = filepath.Join(util.UserCurrent().HomeDir, "AppData", "Roaming", "MicroSIP", "microsip.ini")
 	ramalAtual             string
 	processName            = "microsip.exe"
+
+	ramaisDoCliente []string
 )
 
 func HandleHomeClient(c *gin.Context) {
@@ -39,26 +41,56 @@ func HandleHomeClient(c *gin.Context) {
 		fmt.Println("Bem-vindo! Por favor, digite algo:")
 		reader := bufio.NewReader(os.Stdin)
 
-		entrada, err := reader.ReadString('\n')
+		entradaCNPJ, err := reader.ReadString('\n')
 		if err != nil {
 			fmt.Println("Erro ao ler a entrada:", err)
 			return
 		}
-		entrada = strings.TrimRight(entrada, "\n")
+
+		// if entradaCNPJ ==
+
+		entradaCNPJ = strings.TrimRight(entradaCNPJ, "\n")
 		// cnpj := r.FormValue("cnpj")
 
 		cli := &domain.Cliente{}
-		cliente, err := cli.RequestJsonCliente(url_padrao + entrada)
+		cliente, err := cli.RequestJsonCliente(url_padrao + entradaCNPJ)
 		if err != nil {
 			http.Error(c.Writer, "Erro ao encontrar cliente.", http.StatusBadRequest)
+		} else {
+			Cliente = &cliente[0]
+			c.JSON(http.StatusOK, Cliente)
+			fmt.Printf("Encontrei a empresa %s na base. . .\n", Cliente.Cliente)
+
+			// fmt.Println(Cliente.RamaisRegistrados)
+
+			fmt.Println("Os ramais que temos são:")
+			ramaisDoCliente = make([]string, 0)
+
+			for _, ramais := range Cliente.RamaisRegistrados {
+				fmt.Printf("Ramal %s, ", ramais.Sip)
+				ramaisDoCliente = append(ramaisDoCliente, ramais.Sip)
+
+			}
+
+			fmt.Println(ramaisDoCliente)
+			fmt.Println("Escolha um ramal, por favor:")
+			reader = bufio.NewReader(os.Stdin)
+
+			entradaRAMAL, err := reader.ReadString('\n')
+			if err != nil {
+				fmt.Println("Erro ao ler a entrada:", err)
+				return
+			}
+			entradaRAMAL = strings.TrimRight(entradaRAMAL, "\n")
+
+			for _, sip := range ramaisDoCliente {
+				if sip == entradaRAMAL {
+					fmt.Printf("Achamos o seu ramal %s", sip)
+				}
+			}
 		}
 
-		Cliente = &cliente[0]
-
-		c.JSON(http.StatusOK, Cliente)
-
 		return
-
 	}
 
 	// Método não suportado

@@ -19,7 +19,7 @@ func InitRouter() {
 	// Adiciona o middleware CORS ao roteador Gin
 	r.Use(cors.New(config))
 
-	r.GET("/cliente", handler.HandleHomeClient)
+	r.GET("/", handler.HandleHomeClient)
 	r.POST("/cliente", handler.HandlePostClient)
 	r.GET("/ramal", handler.HandleSelecionarRamal)
 	r.GET("/t", handler.HandleFileConfig)

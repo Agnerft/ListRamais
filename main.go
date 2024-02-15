@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/agnerft/ListRamais/router"
 )
 
@@ -40,7 +38,7 @@ func main() {
 	// http.HandleFunc("/acaoyes", callers.HandleFileConfig)
 	// http.HandleFunc("/acaono", callers.HandleInstallMicrosip)
 	router.InitRouter()
-	fmt.Println("Servidor Rodando")
+	// fmt.Println("Servidor Rodando")
 
 	// go func() {
 	// 	if err := http.ListenAndServe(":8080", nil); err != nil {
